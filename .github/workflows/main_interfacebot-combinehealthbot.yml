@@ -36,3 +36,5 @@ jobs:
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_c7f6f3cdd9d941e7bc15b7482a618a92 }}
         package: '.\myapp.zip'
+    - name: 'Start app'
+      run: python app.py
