@@ -3,5 +3,4 @@ botbuilder-ai==4.11.0
 botbuilder-azure==4.11.0
 botbuilder-core==4.11.0
 requests
-aiohttp==3.4.4
 asyncio

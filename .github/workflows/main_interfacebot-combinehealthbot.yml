@@ -1,39 +1,38 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy Python app to Azure Web App - interfacebot-combinehealthbot
+name: Deploy Python package to Azure Web App
 
 on:
-  push:
-    branches:
-      - main
+  [push]
+
+# CONFIGURATION
+# For help, go to https://github.com/Azure/Actions
+#
+# 1. Set up the following secrets in your repository:
+#   AZURE_WEBAPP_PUBLISH_PROFILE
+#
+# 2. Change these variables for your configuration:
+env:
+  AZURE_WEBAPP_NAME: hardbot2 # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: '.'         # set this to the path to your web app project, defaults to the repository root
+  PYTHON_VERSION: '3.7'                  # set this to the python version to use
 
 jobs:
-  build-and-deploy:
-    runs-on: windows-latest
-
+  build:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-
-    - name: Set up Python version
+    - uses: actions/checkout@v1
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
       uses: actions/setup-python@v1
       with:
-        python-version: '3.6'
-
-    - name: Install Python dependencies
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Install dependencies
       run: |
-        python -m venv env
-        .\env\Scripts\activate
+        python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install aiohttp
-
-    - name: Zip the application files
-      run: Compress-Archive .\* myapp.zip
-
-    - name: 'Deploy to Azure Web App'
+    - name: Deploy Web App using GH Action azure/webapps-deploy
       uses: azure/webapps-deploy@v2
       with:
-        app-name: 'interfacebot-combinehealthbot'
-        slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_c7f6f3cdd9d941e7bc15b7482a618a92 }}
-        package: '.\myapp.zip'
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
